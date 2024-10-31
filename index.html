@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle-Like Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.png" type="image/png">
+</head>
+<body>
+    <div class="game-container">
+        <h1 id="date-heading"></h1>
+        <div id="message"></div>
+
+        <!-- Game board grid for guesses -->
+        <div id="game-board"></div>
+
+        <!-- Eligible words display box -->
+        <div id="eligible-words-box">
+            <h3>Eligible Words</h3>
+            <div id="eligible-words"></div>
+        </div>
+    </div>
+    <script type="module" src="data/commonwords.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

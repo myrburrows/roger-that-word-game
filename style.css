@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#message {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #d9534f; /* Red for error or status messages */
+}
+
+#game-board {
+    display: grid;
+    grid-template-rows: repeat(4, auto);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(7, 40px); /* Adjust for max word length */
+    gap: 5px;
+    justify-content: center;
+}
+
+.letter-box {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+    background-color: #fff;
+    color: #333;
+}
+
+.letter-box.correct {
+    background-color: #28a745; /* Green for correct letters */
+    color: #fff;
+}
+
+.letter-box.present {
+    background-color: #ffc107; /* Yellow for present but misplaced letters */
+    color: #fff;
+}
+
+.letter-box.absent {
+    background-color: #808080; /* Grey for incorrect letters */
+    color: #fff;
+}
+
+#eligible-words-box {
+    margin-top: 20px;
+}
+
+#eligible-words {
+    max-height: 100px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
