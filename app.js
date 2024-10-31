@@ -18,7 +18,7 @@ function getDailyWord() {
     const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
     const wordIndex = daysSinceStart % COMMONWORDS.length;
     const dailyWord = COMMONWORDS[wordIndex];
-    console.log("Word to guess:", dailyWord); // Log the selected daily word for verification
+//    console.log("Word to guess:", dailyWord); // Log the selected daily word for verification
     return dailyWord;
 }
 

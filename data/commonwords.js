@@ -1,6 +1,6 @@
 export const COMMONWORDS = [
     "halfway",
-    "citizen",
+    "prefer",
     "planet",
     "review",
     "sauce",
