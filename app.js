@@ -115,12 +115,15 @@ function checkGuess(guess) {
 function updateEligibleWords(guess) {
     eligibleWords = eligibleWords.filter(word => {
         for (let i = 0; i < wordLength; i++) {
-            if (
-                (guess[i] === dailyWord[i] && word[i] !== guess[i]) ||  // Check correct placements
-                (dailyWord.includes(guess[i]) && !word.includes(guess[i])) ||  // Check misplaced letters
-                (!dailyWord.includes(guess[i]) && word.includes(guess[i]))  // Check for absent letters
-            ) {
-                return false;
+            if (guess[i] === dailyWord[i]) {
+                // Letter is correct and in the correct position
+                if (word[i] !== guess[i]) return false;
+            } else if (dailyWord.includes(guess[i])) {
+                // Letter is correct but in the wrong position
+                if (word[i] === guess[i] || !word.includes(guess[i])) return false;
+            } else {
+                // Letter is absent in the daily word
+                if (word.includes(guess[i])) return false;
             }
         }
         return true;
