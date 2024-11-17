@@ -8,6 +8,12 @@ const message = document.getElementById("message");
 const eligibleWordsBox = document.getElementById("eligible-words-box");
 const eligibleWordsContainer = document.getElementById("eligible-words");
 
+fetch('https://roger-that-bridge-flashcards-5bffcbb5d89a.herokuapp.com/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ app_name: 'roger-that-word-game' })
+  });
+
 let currentRow = 0;
 let currentBox = 0;
 
