@@ -16,10 +16,7 @@ fetch('https://roger-that-bridge-flashcards-5bffcbb5d89a.herokuapp.com/track', {
 
 let currentRow = 0;
 let currentBox = 0;
-let score = 0; // Initialize the score variable
-let guessCount = 0; // Track the number of guesses
-let eligibleWordsVisible = false; // Track visibility state of eligible words
-let eligibleWordsUsed = false; // Tracks whether the Eligible Words box was toggled
+let guessCount = 0; // Add a counter to track the number of guesses
 
 // Get today's word based on date offset
 function getDailyWord() {
@@ -35,18 +32,8 @@ const dailyWord = getDailyWord();
 const wordLength = dailyWord.length;
 let eligibleWords = Array.from(wordLength === 5 ? MYWORD5 : wordLength === 6 ? MYWORD6 : MYWORD7);
 
-// Ensure the contents of the box are hidden by default
+// Ensure Eligible Words box contents are hidden initially
 eligibleWordsContainer.style.display = "none";
-
-// Toggle eligible-words-box contents visibility when clicked
-eligibleWordsBox.addEventListener("click", () => {
-    eligibleWordsVisible = !eligibleWordsVisible;
-    eligibleWordsContainer.style.display = eligibleWordsVisible ? "block" : "none";
-    if (eligibleWordsVisible) {
-        eligibleWordsUsed = true; // Mark as used when toggled ON
-        displayEligibleWords();
-    }
-});
 
 // Initialize the game board with rows and boxes
 function createRows() {
@@ -100,78 +87,28 @@ function submitGuess() {
     const guess = Array.from(row.children).map(box => box.textContent.trim().toLowerCase()).join("");
 
     if (guess.length === wordLength && isValidGuess(guess)) {
-        guessCount++; // Increment the guess count
+        guessCount++; // Increment the guess counter
         checkGuess(guess);
+        currentRow++;
+        currentBox = 0;
 
-        if (guess === dailyWord) {
-            calculateScore(true); // Pass true since the guess is correct
-            displayScore();
-            endGame();
+        // Filter eligible words based on guess
+        updateEligibleWords(guess);
+
+        // Only display eligible words after the second guess
+        if (guessCount > 1) {
+            displayEligibleWords();
+        }
+
+        if (currentRow < 4) {
+            const nextRowFirstBox = document.querySelector(`.row[data-row-index='${currentRow}'] .letter-box[data-box-index='0']`);
+            nextRowFirstBox.focus();
         } else {
-            currentRow++;
-            currentBox = 0;
-
-            // Update eligible words and display them if the box is toggled on
-            updateEligibleWords(guess);
-            if (eligibleWordsVisible) {
-                displayEligibleWords();
-            }
-
-            // Check if max guesses are reached
-            if (currentRow < 4) {
-                displayNextRow();
-            } else {
-                calculateScore(false); // Pass false since all attempts failed
-                displayScore();
-                endGame();
-            }
+            endGame();
         }
     } else {
         message.textContent = "Enter a valid word";
     }
-}
-
-// Display the first box in the next row
-function displayNextRow() {
-    const nextRowFirstBox = document.querySelector(`.row[data-row-index='${currentRow}'] .letter-box[data-box-index='0']`);
-    nextRowFirstBox.focus();
-}
-
-// Calculate the score based on the number of guesses and whether Eligible Words were used
-function calculateScore(isCorrect) {
-    if (!isCorrect) {
-        score = 0; // No score if the user never guesses correctly
-    } else {
-        switch (guessCount) {
-            case 1:
-                score = 100;
-                break;
-            case 2:
-                score = 95;
-                break;
-            case 3:
-                score = 90;
-                break;
-            case 4:
-                score = 85;
-                break;
-            default:
-                score = 0; // Just a fallback, should never reach here if isCorrect is true
-        }
-
-        // Apply a 20-point penalty if Eligible Words were used
-        if (eligibleWordsUsed) {
-            score -= 20;
-        }
-    }
-}
-
-// Display the final score with feedback about Eligible Words usage
-function displayScore() {
-    const eligibleWordsMessage = eligibleWordsUsed
-        ? "Eligible Words = ON."
-        : "Eligible Words = OFF.";
-    message.textContent = `Game Over! Your score: ${score}%. ${eligibleWordsMessage}`;
 }
 
 // Check if the guess matches the daily word
@@ -193,10 +130,13 @@ function updateEligibleWords(guess) {
     eligibleWords = eligibleWords.filter(word => {
         for (let i = 0; i < wordLength; i++) {
             if (guess[i] === dailyWord[i]) {
+                // Letter is correct and in the correct position
                 if (word[i] !== guess[i]) return false;
             } else if (dailyWord.includes(guess[i])) {
+                // Letter is correct but in the wrong position
                 if (word[i] === guess[i] || !word.includes(guess[i])) return false;
             } else {
+                // Letter is absent in the daily word
                 if (word.includes(guess[i])) return false;
             }
         }
@@ -207,6 +147,8 @@ function updateEligibleWords(guess) {
 // Display eligible words in the eligible words box
 function displayEligibleWords() {
     eligibleWordsContainer.innerHTML = eligibleWords.join(", ");
+    eligibleWordsBox.style.display = "block"; // Ensure the box is visible
+    eligibleWordsContainer.style.display = "block"; // Make contents visible
 }
 
 // Validate if guess exists in the appropriate word list
@@ -214,21 +156,6 @@ function isValidGuess(guess) {
     const wordList = wordLength === 5 ? MYWORD5 : wordLength === 6 ? MYWORD6 : MYWORD7;
     return wordList.includes(guess);
 }
-
-// End game after max guesses
-function endGame() {
-    document.querySelectorAll('.letter-box').forEach(box => box.setAttribute('contenteditable', 'false'));
-}
-
-// Add a single keydown event listener to manage both Enter and Backspace
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Backspace") {
-        handleBackspace(event);
-    } else if (event.key === "Enter") {
-        event.preventDefault();
-        submitGuess();
-    }
-});
 
 // Handle Backspace key to move back and clear letter
 function handleBackspace(event) {
@@ -243,6 +170,21 @@ function handleBackspace(event) {
             event.preventDefault();
         }
     }
+}
+
+// Add a single keydown event listener to manage both Enter and Backspace
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Backspace") {
+        handleBackspace(event);
+    } else if (event.key === "Enter") {
+        event.preventDefault();
+        submitGuess();
+    }
+});
+
+// End game after max guesses
+function endGame() {
+    message.textContent = "Game Over";
 }
 
 // Initialize the game board and date heading
