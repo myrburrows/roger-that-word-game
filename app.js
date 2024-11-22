@@ -7,6 +7,7 @@ const gameBoard = document.getElementById("game-board");
 const message = document.getElementById("message");
 const eligibleWordsBox = document.getElementById("eligible-words-box");
 const eligibleWordsContainer = document.getElementById("eligible-words");
+const shareBtn = document.getElementById("share-btn"); // Reference the Share button
 
 fetch('https://roger-that-bridge-flashcards-5bffcbb5d89a.herokuapp.com/track', {
     method: 'POST',
@@ -16,7 +17,8 @@ fetch('https://roger-that-bridge-flashcards-5bffcbb5d89a.herokuapp.com/track', {
 
 let currentRow = 0;
 let currentBox = 0;
-let guessCount = 0; // Add a counter to track the number of guesses
+let guessCount = 0; // Track the number of guesses
+let solved = false; // Track whether the game is solved
 
 // Get today's word based on date offset
 function getDailyWord() {
@@ -89,6 +91,14 @@ function submitGuess() {
     if (guess.length === wordLength && isValidGuess(guess)) {
         guessCount++; // Increment the guess counter
         checkGuess(guess);
+
+        // Check if the word is solved
+        if (guess === dailyWord) {
+            solved = true;
+            endGame();
+            return;
+        }
+
         currentRow++;
         currentBox = 0;
 
@@ -100,11 +110,12 @@ function submitGuess() {
             displayEligibleWords();
         }
 
-        if (currentRow < 4) {
+        // Check if all guesses are exhausted
+        if (currentRow >= 4) {
+            endGame();
+        } else {
             const nextRowFirstBox = document.querySelector(`.row[data-row-index='${currentRow}'] .letter-box[data-box-index='0']`);
             nextRowFirstBox.focus();
-        } else {
-            endGame();
         }
     } else {
         message.textContent = "Enter a valid word";
@@ -130,13 +141,10 @@ function updateEligibleWords(guess) {
     eligibleWords = eligibleWords.filter(word => {
         for (let i = 0; i < wordLength; i++) {
             if (guess[i] === dailyWord[i]) {
-                // Letter is correct and in the correct position
                 if (word[i] !== guess[i]) return false;
             } else if (dailyWord.includes(guess[i])) {
-                // Letter is correct but in the wrong position
                 if (word[i] === guess[i] || !word.includes(guess[i])) return false;
             } else {
-                // Letter is absent in the daily word
                 if (word.includes(guess[i])) return false;
             }
         }
@@ -184,7 +192,24 @@ document.addEventListener("keydown", (event) => {
 
 // End game after max guesses
 function endGame() {
+    const gameDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
+    const status = solved
+        ? `Solved in ${guessCount} tries!`
+        : "Couldn't solve today's word.";
+    const shareMessage = `Roger That Word Game | ${gameDate} | ${status}`;
+
+    // Display game over message
     message.textContent = "Game Over";
+
+    // Show the Share button
+    shareBtn.style.display = "block";
+    shareBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(shareMessage).then(() => {
+            alert("Copied to clipboard: " + shareMessage);
+        }).catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
+    });
 }
 
 // Initialize the game board and date heading
