@@ -20,14 +20,27 @@ let currentBox = 0;
 let guessCount = 0; // Track the number of guesses
 let solved = false; // Track whether the game is solved
 
-// Get today's word based on date offset
+// Toggle this flag to enable/disable test mode
+const testMode = false; // Set to `false` for production
+
+// Get today's word based on date offset or a random word in test mode
 function getDailyWord() {
-    const startDate = new Date(2024, 9, 30); // October 30, 2024 (0-indexed month)
-    const today = new Date();
-    const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    const wordIndex = daysSinceStart % COMMONWORDS.length;
-    const dailyWord = COMMONWORDS[wordIndex];
-    return dailyWord;
+    let dailyWord; // Declare the dailyWord variable
+
+    if (testMode) {
+        // Test mode: Return a random word from COMMONWORDS
+        const randomIndex = Math.floor(Math.random() * COMMONWORDS.length);
+        dailyWord = COMMONWORDS[randomIndex];
+    } else {
+        // Production mode: Calculate today's word based on date
+        const startDate = new Date(2024, 9, 30); // October 30, 2024 (0-indexed month)
+        const today = new Date();
+        const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+        const wordIndex = daysSinceStart % COMMONWORDS.length;
+        dailyWord = COMMONWORDS[wordIndex];
+    }
+
+    return dailyWord; // Return the selected word
 }
 
 const dailyWord = getDailyWord();
@@ -106,7 +119,7 @@ function submitGuess() {
         updateEligibleWords(guess);
 
         // Only display eligible words after the second guess
-        if (guessCount > 1) {
+        if (guessCount > 2) {
             displayEligibleWords();
         }
 
