@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wordle-Like Game</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.png" type="image/png">
 </head>
 <body>
@@ -23,6 +23,48 @@
             <h3>Eligible Words</h3>
             <div id="eligible-words"></div>
         </div>
+        
+        <!-- Letters container for tracking used letters -->
+        <div id="letters-container">
+            <div class="letters-row">
+                <span class="letter-display" data-letter="E">E</span>
+                <span class="letter-display" data-letter="A">A</span>
+                <span class="letter-display" data-letter="O">O</span>
+                <span class="letter-display" data-letter="I">I</span>
+                <span class="letter-display" data-letter="U">U</span>
+                <span class="letter-display" data-letter="Y">Y</span>
+            </div>
+            <div class="letters-row">
+                <span class="letter-display" data-letter="T">T</span>
+                <span class="letter-display" data-letter="N">N</span>
+                <span class="letter-display" data-letter="R">R</span>
+                <span class="letter-display" data-letter="S">S</span>
+                <span class="letter-display" data-letter="L">L</span>
+                <span class="letter-display" data-letter="D">D</span>
+                <span class="letter-display" data-letter="C">C</span>
+                <span class="letter-display" data-letter="M">M</span>
+                <span class="letter-display" data-letter="P">P</span>
+                <span class="letter-display" data-letter="H">H</span>
+            </div>
+            <div class="letters-row">
+                <span class="letter-display" data-letter="G">G</span>
+                <span class="letter-display" data-letter="B">B</span>
+                <span class="letter-display" data-letter="F">F</span>
+                <span class="letter-display" data-letter="W">W</span>
+                <span class="letter-display" data-letter="K">K</span>
+                <span class="letter-display" data-letter="V">V</span>
+                <span class="letter-display" data-letter="X">X</span>
+                <span class="letter-display" data-letter="Z">Z</span>
+                <span class="letter-display" data-letter="J">J</span>
+                <span class="letter-display" data-letter="Q">Q</span>
+            </div>
+        </div>
+    
+        <script type="module" src="data/commonwords.js"></script>
+        <script type="module" src="app.js"></script>
+    </body>
+    </html>
+    
     </div>
     <script type="module" src="data/commonwords.js"></script>
     <script type="module" src="app.js"></script>

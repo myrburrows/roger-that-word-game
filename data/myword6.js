@@ -526,6 +526,7 @@ export const MYWORD6 = [
     "course",
     "cousin",
     "covers",
+    "crease",
     "create",
     "credit",
     "crisis",

@@ -75,3 +75,42 @@ h1 {
     padding: 10px;
     background-color: #f9f9f9;
 }
+
+#letters-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.letters-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.letter-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: default; /* since these are for display only */
+}
+
+/* Class used when a letter is “used” or guessed, to gray it out */
+.letter-display.greyed-out {
+    background-color: #ccc;
+    color: #999;
+    border-color: #aaa;
+}
+
+.letter-display.highlighted {
+    background-color: #ffc107; /* A yellowish highlight */
+    color: #333;
+    border-color: #ffb000;    /* Slightly darker yellow, etc. */
+}

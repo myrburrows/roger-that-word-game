@@ -21,7 +21,7 @@ let guessCount = 0; // Track the number of guesses
 let solved = false; // Track whether the game is solved
 
 // Toggle this flag to enable/disable test mode
-const testMode = false; // Set to `false` for production
+const testMode = true; // Set to `false` for production
 
 // Get today's word based on date offset or a random word in test mode
 function getDailyWord() {
@@ -99,13 +99,17 @@ function moveToNextBox() {
 // Process the guess upon Enter key press
 function submitGuess() {
     const row = document.querySelector(`.row[data-row-index='${currentRow}']`);
-    const guess = Array.from(row.children).map(box => box.textContent.trim().toLowerCase()).join("");
+    const guess = Array.from(row.children)
+                       .map(box => box.textContent.trim().toLowerCase())
+                       .join("");
 
     if (guess.length === wordLength && isValidGuess(guess)) {
-        guessCount++; // Increment the guess counter
+        guessCount++;
         checkGuess(guess);
+        
+        // Mark the letters in this guess as used
+        markLettersAsUsed(guess);
 
-        // Check if the word is solved
         if (guess === dailyWord) {
             solved = true;
             endGame();
@@ -115,19 +119,20 @@ function submitGuess() {
         currentRow++;
         currentBox = 0;
 
-        // Filter eligible words based on guess
+        // Filter eligible words
         updateEligibleWords(guess);
 
-        // Only display eligible words after the second guess
+        // Display eligible words after 2 guesses
         if (guessCount > 2) {
             displayEligibleWords();
         }
 
-        // Check if all guesses are exhausted
         if (currentRow >= 4) {
             endGame();
         } else {
-            const nextRowFirstBox = document.querySelector(`.row[data-row-index='${currentRow}'] .letter-box[data-box-index='0']`);
+            const nextRowFirstBox = document.querySelector(
+              `.row[data-row-index='${currentRow}'] .letter-box[data-box-index='0']`
+            );
             nextRowFirstBox.focus();
         }
     } else {
@@ -222,6 +227,26 @@ function endGame() {
         }).catch(err => {
             console.error("Failed to copy text: ", err);
         });
+    });
+}
+
+function markLettersAsUsed(guess) {
+    const guessLetters = guess.toUpperCase().split("");
+    const dailyUpper = dailyWord.toUpperCase();
+
+    guessLetters.forEach(letter => {
+        const letterElem = document.querySelector(`.letter-display[data-letter="${letter}"]`);
+        if (letterElem) {
+            if (dailyUpper.includes(letter)) {
+                // Letter is in the dailyWord, highlight it
+                letterElem.classList.add("highlighted");
+                letterElem.classList.remove("greyed-out");
+            } else {
+                // Letter is NOT in the dailyWord, gray it out
+                letterElem.classList.add("greyed-out");
+                letterElem.classList.remove("highlighted");
+            }
+        }
     });
 }
 
