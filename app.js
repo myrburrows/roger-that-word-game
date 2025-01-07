@@ -21,7 +21,7 @@ let guessCount = 0; // Track the number of guesses
 let solved = false; // Track whether the game is solved
 
 // Toggle this flag to enable/disable test mode
-const testMode = true; // Set to `false` for production
+const testMode = false; // Set to `false` for production
 
 // Get today's word based on date offset or a random word in test mode
 function getDailyWord() {
